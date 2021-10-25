@@ -137,6 +137,10 @@ app.get('/fruits', (req,res) => {
     .catch((error) => res.json((error)))
 })
 
+app.get('/', (req,res) => {
+    res.redirect('/fruits')
+})
+
 // Show Route
 app.get('/fruits/:id', (req,res) =>{
     const id = req.params.id
