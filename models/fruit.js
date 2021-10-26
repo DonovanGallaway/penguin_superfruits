@@ -13,7 +13,8 @@ const {Schema, model} = mongoose // destructuring Schema and model from mongoose
 const fruitSchema = new Schema({
     name: String,
     color: String,
-    readyToEat: Boolean
+    readyToEat: Boolean,
+    username: String
 })
 
 // Make the fruit Model

@@ -15,6 +15,18 @@ const router = express.Router()
 // Routes
 //////////////////////
 
+///////////////////////////////////
+// Route Middleware
+///////////////////////////////////
+
+router.use((req,res,next) =>{
+    if (req.session.loggedIn){
+        next()
+    } else{
+        res.redirect('/user/login')
+    }
+})
+
 
 ///////////////////////////////////
 // Routes
@@ -24,25 +36,6 @@ const router = express.Router()
 // Fruit Routes
 ////////////////
 
-// Seed route
-router.get('/seed', (req,res) => {
-    // array of starter fruits
-    const startFruits = [
-        { name: "Orange", color: "orange", readyToEat: false },
-        { name: "Grape", color: "purple", readyToEat: false },
-        { name: "Banana", color: "orange", readyToEat: false },
-        { name: "Strawberry", color: "red", readyToEat: false },
-        { name: "Coconut", color: "brown", readyToEat: false },
-      ];
-    // delete current fruits
-    Fruit.deleteMany({}).then((data) => {
-        Fruit.create(startFruits).then((data) =>{
-            res.json(data)
-        })
-    })
-})
-
-
 // New Route
 router.get('/new', (req,res) => {
     res.render('fruits/new')
@@ -51,7 +44,7 @@ router.get('/new', (req,res) => {
 // Create Route
 router.post('/', (req,res) => {
     req.body.readyToEat = req.body.readyToEat === "on" ? true : false
-
+    req.body.username = req.session.username
     Fruit.create(req.body).then((fruit)=>{
         res.redirect('/fruits')
         .catch((error) =>{
@@ -90,7 +83,7 @@ router.delete('/:id', (req,res) =>{
 // Index Route
 router.get('/', (req,res) => {
     // find all fruits
-    Fruit.find({})
+    Fruit.find({username: req.session.username})
     .then((fruits) => {
         res.render('fruits/index.liquid', {fruits})
     })
